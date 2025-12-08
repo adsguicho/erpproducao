@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP Produção - Gestão Industrial</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Cabeçalho -->
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-industry"></i>
+            <h1>ERP Produção</h1>
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="#dashboard" class="nav-link active" data-section="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="#produtos" class="nav-link" data-section="produtos"><i class="fas fa-box"></i> Produtos</a></li>
+                <li><a href="#capacidade" class="nav-link" data-section="capacidade"><i class="fas fa-calculator"></i> Capacidade</a></li>
+                <li><a href="#oee" class="nav-link" data-section="oee"><i class="fas fa-chart-line"></i> OEE</a></li>
+                <li><a href="#kanban" class="nav-link" data-section="kanban"><i class="fas fa-columns"></i> Kanban</a></li>
+                <li><a href="#fluxo" class="nav-link" data-section="fluxo"><i class="fas fa-project-diagram"></i> Fluxo</a></li>
+            </ul>
+        </nav>
+        <div class="user-info">
+            <span>Usuário: Admin</span>
+            <div class="status-indicator"></div>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <!-- Dashboard -->
+        <section id="dashboard" class="content-section active">
+            <div class="section-header">
+                <h2><i class="fas fa-home"></i> Dashboard</h2>
+                <p>Visão geral da produção</p>
+            </div>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Capacidade Produtiva</h3>
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <div class="card-body">
+                        <div class="metric">
+                            <span class="metric-label">Instalada:</span>
+                            <span class="metric-value" id="instalada-dash">0h</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Efetiva:</span>
+                            <span class="metric-value" id="efetiva-dash">0h</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Disponível:</span>
+                            <span class="metric-value" id="disponivel-dash">0h</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Realizada:</span>
+                            <span class="metric-value" id="realizada-dash">0h</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>OEE Atual</h3>
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="card-body">
+                        <div class="oee-gauge">
+                            <div class="gauge-container">
+                                <div class="gauge" id="oee-gauge">
+                                    <div class="gauge-fill"></div>
+                                    <div class="gauge-cover">0%</div>
+                                </div>
+                            </div>
+                            <div class="oee-breakdown">
+                                <div class="breakdown-item">
+                                    <span class="breakdown-label">Disponibilidade</span>
+                                    <span class="breakdown-value" id="disponibilidade-dash">0%</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span class="breakdown-label">Performance</span>
+                                    <span class="breakdown-value" id="performance-dash">0%</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span class="breakdown-label">Qualidade</span>
+                                    <span class="breakdown-value" id="qualidade-dash">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Produtos em Andamento</h3>
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <div class="card-body">
+                        <div id="kanban-summary">
+                            <p>Carregando atividades...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Status da Produção</h3>
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <div class="card-body">
+                        <div class="status-indicators">
+                            <div class="status-item status-ok">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Máquinas Operando: 3/5</span>
+                            </div>
+                            <div class="status-item status-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>Alertas: 2</span>
+                            </div>
+                            <div class="status-item status-critical">
+                                <i class="fas fa-times-circle"></i>
+                                <span>Paradas: 1</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-charts">
+                <div class="chart-card">
+                    <h3><i class="fas fa-chart-bar"></i> Capacidade Produtiva Semanal</h3>
+                    <canvas id="dashboard-capacidade"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3><i class="fas fa-chart-line"></i> Tendência OEE</h3>
+                    <canvas id="dashboard-tendencia"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Produtos -->
+        <section id="produtos" class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-box"></i> Gestão de Produtos</h2>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="btn-novo-produto">
+                        <i class="fas fa-plus"></i> Novo Produto
+                    </button>
+                    <button class="btn btn-secondary" id="btn-exportar-produtos">
+                        <i class="fas fa-file-export"></i> Exportar
+                    </button>
+                </div>
+            </div>
+
+            <div class="produtos-container">
+                <div class="filtros-produtos">
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="filtro-produto" placeholder="Buscar produto por nome ou código..." class="input-search">
+                    </div>
+                    <div class="filter-actions">
+                        <select id="filtro-categoria" class="select-filter">
+                            <option value="">Todas categorias</option>
+                            <option value="cobertura">Coberturas</option>
+                            <option value="biju">Biju</option>
+                            <option value="granulado">Granulado</option>
+                        </select>
+                        <select id="filtro-status" class="select-filter">
+                            <option value="">Todos os status</option>
+                            <option value="estoque-ok">Estoque OK</option>
+                            <option value="estoque-baixo">Estoque Baixo</option>
+                            <option value="estoque-critico">Estoque Crítico</option>
+                        </select>
+                        <button class="btn btn-secondary" id="btn-limpar-filtros">
+                            <i class="fas fa-times"></i> Limpar Filtros
+                        </button>
+                    </div>
+                </div>
+
+                <div class="produtos-summary">
+                    <div class="summary-card cobertura-summary">
+                        <div class="summary-icon">
+                            <i class="fas fa-ice-cream"></i>
+                        </div>
+                        <div class="summary-content">
+                            <h3>Coberturas</h3>
+                            <div class="summary-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-boxes"></i>
+                                    <strong id="total-coberturas">18</strong> produtos
+                                </span>
+                                <span class="stat-item">
+                                    <i class="fas fa-tags"></i>
+                                    <strong>6</strong> sabores
+                                </span>
+                                <span class="stat-item">
+                                    <i class="fas fa-weight"></i>
+                                    <strong>3</strong> tamanhos
+                                </span>
+                            </div>
+                            <div class="summary-alert" id="alert-coberturas">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Todos os produtos com estoque OK</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="summary-card biju-summary">
+                        <div class="summary-icon">
+                            <i class="fas fa-cookie"></i>
+                        </div>
+                        <div class="summary-content">
+                            <h3>Biju</h3>
+                            <div class="summary-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-boxes"></i>
+                                    <strong id="total-biju">1</strong> produto
+                                </span>
+                                <span class="stat-item">
+                                    <i class="fas fa-weight"></i>
+                                    <strong>250g</strong>
+                                </span>
+                            </div>
+                            <div class="summary-alert" id="alert-biju">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Estoque dentro do esperado</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="summary-card granulado-summary">
+                        <div class="summary-icon">
+                            <i class="fas fa-candy-cane"></i>
+                        </div>
+                        <div class="summary-content">
+                            <h3>Granulado</h3>
+                            <div class="summary-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-boxes"></i>
+                                    <strong id="total-granulado">4</strong> produtos
+                                </span>
+                                <span class="stat-item">
+                                    <i class="fas fa-tags"></i>
+                                    <strong>2</strong> sabores
+                                </span>
+                                <span class="stat-item">
+                                    <i class="fas fa-weight"></i>
+                                    <strong>2</strong> tamanhos
+                                </span>
+                            </div>
+                            <div class="summary-alert" id="alert-granulado">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Todos os produtos com estoque OK</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="categorias-container">
+                    <!-- Coberturas -->
+                    <div class="categoria-section" id="secao-coberturas">
+                        <div class="categoria-header">
+                            <div class="categoria-titulo">
+                                <h3><i class="fas fa-ice-cream"></i> Coberturas</h3>
+                                <span class="categoria-count">18 produtos</span>
+                            </div>
+                            <div class="categoria-filtros">
+                                <select id="filtro-sabor-cobertura" class="select-filter-sm">
+                                    <option value="">Todos os sabores</option>
+                                    <option value="chocolate">Chocolate</option>
+                                    <option value="chocolate-meio-amargo">Chocolate Meio Amargo</option>
+                                    <option value="morango">Morango</option>
+                                    <option value="coco">Coco</option>
+                                    <option value="doce-de-leite">Doce de Leite</option>
+                                    <option value="caramelo">Caramelo</option>
+                                </select>
+                                <select id="filtro-tamanho-cobertura" class="select-filter-sm">
+                                    <option value="">Todos os tamanhos</option>
+                                    <option value="190g">190g</option>
+                                    <option value="390g">390g</option>
+                                    <option value="2kg">2kg</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="produtos-categoria-grid" id="grid-coberturas">
+                            <!-- Produtos de cobertura serão carregados aqui -->
+                        </div>
+                    </div>
+
+                    <!-- Biju -->
+                    <div class="categoria-section" id="secao-biju">
+                        <div class="categoria-header">
+                            <div class="categoria-titulo">
+                                <h3><i class="fas fa-cookie"></i> Biju</h3>
+                                <span class="categoria-count">1 produto</span>
+                            </div>
+                        </div>
+                        <div class="produtos-categoria-grid" id="grid-biju">
+                            <!-- Produtos de biju serão carregados aqui -->
+                        </div>
+                    </div>
+
+                    <!-- Granulado -->
+                    <div class="categoria-section" id="secao-granulado">
+                        <div class="categoria-header">
+                            <div class="categoria-titulo">
+                                <h3><i class="fas fa-candy-cane"></i> Granulado</h3>
+                                <span class="categoria-count">4 produtos</span>
+                            </div>
+                            <div class="categoria-filtros">
+                                <select id="filtro-sabor-granulado" class="select-filter-sm">
+                                    <option value="">Todos os sabores</option>
+                                    <option value="chocolate">Chocolate</option>
+                                    <option value="colorido">Colorido</option>
+                                </select>
+                                <select id="filtro-tamanho-granulado" class="select-filter-sm">
+                                    <option value="">Todos os tamanhos</option>
+                                    <option value="120g">120g</option>
+                                    <option value="500g">500g</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="produtos-categoria-grid" id="grid-granulado">
+                            <!-- Produtos de granulado serão carregados aqui -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Capacidade Produtiva -->
+        <section id="capacidade" class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-calculator"></i> Capacidade Produtiva</h2>
+                <button class="btn btn-secondary" id="btn-exportar-capacidade">
+                    <i class="fas fa-file-export"></i> Exportar Relatório
+                </button>
+            </div>
+
+            <div class="capacidade-container">
+                <div class="configuracoes-capacidade">
+                    <div class="config-card">
+                        <h3><i class="fas fa-cogs"></i> Configurações da Produção</h3>
+                        
+                        <div class="form-group">
+                            <label for="horas-efetiva">
+                                <i class="fas fa-clock"></i> Horas por dia (Efetiva):
+                            </label>
+                            <div class="input-with-actions">
+                                <input type="number" id="horas-efetiva" value="8" min="1" max="24" class="input-number">
+                                <div class="input-actions">
+                                    <button class="btn-icon btn-sm" data-action="decrement" data-target="horas-efetiva">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <button class="btn-icon btn-sm" data-action="increment" data-target="horas-efetiva">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dias-efetiva">
+                                <i class="fas fa-calendar-alt"></i> Dias por semana (Efetiva):
+                            </label>
+                            <div class="input-with-actions">
+                                <input type="number" id="dias-efetiva" value="6" min="1" max="7" class="input-number">
+                                <div class="input-actions">
+                                    <button class="btn-icon btn-sm" data-action="decrement" data-target="dias-efetiva">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <button class="btn-icon btn-sm" data-action="increment" data-target="dias-efetiva">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="num-maquinas">
+                                <i class="fas fa-industry"></i> Número de Máquinas:
+                            </label>
+                            <div class="input-with-actions">
+                                <input type="number" id="num-maquinas" value="5" min="1" class="input-number">
+                                <div class="input-actions">
+                                    <button class="btn-icon btn-sm" data-action="decrement" data-target="num-maquinas">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <button class="btn-icon btn-sm" data-action="increment" data-target="num-maquinas">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="turnos-dia">
+                                <i class="fas fa-retweet"></i> Turnos por dia:
+                            </label>
+                            <select id="turnos-dia" class="select-filter">
+                                <option value="1">1 turno (8h)</option>
+                                <option value="2">2 turnos (16h)</option>
+                                <option value="3">3 turnos (24h)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="pausas-container">
+                        <h3><i class="fas fa-clock"></i> Gestão de Pausas</h3>
+                        
+                        <div class="pausas-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="tipo-pausa">Tipo de Pausa:</label>
+                                    <select id="tipo-pausa" class="select-filter">
+                                        <option value="programada">Programada</option>
+                                        <option value="nao-programada">Não Programada</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="horas-pausa">Horas:</label>
+                                    <div class="input-with-actions">
+                                        <input type="number" id="horas-pausa" value="1" min="0.5" step="0.5" class="input-number">
+                                        <div class="input-actions">
+                                            <button class="btn-icon btn-sm" data-action="decrement" data-target="horas-pausa">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                            <button class="btn-icon btn-sm" data-action="increment" data-target="horas-pausa">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="descricao-pausa">Descrição:</label>
+                                <input type="text" id="descricao-pausa" placeholder="Ex: Manutenção preventiva, Troca de ferramentas..." class="input-text">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="maquina-pausa">Máquina (opcional):</label>
+                                <select id="maquina-pausa" class="select-filter">
+                                    <option value="">Todas as máquinas</option>
+                                    <option value="1">Máquina 1</option>
+                                    <option value="2">Máquina 2</option>
+                                    <option value="3">Máquina 3</option>
+                                    <option value="4">Máquina 4</option>
+                                    <option value="5">Máquina 5</option>
+                                </select>
+                            </div>
+
+                            <button class="btn btn-secondary" id="btn-adicionar-pausa">
+                                <i class="fas fa-plus"></i> Adicionar Pausa
+                            </button>
+                        </div>
+
+                        <div class="pausas-lista">
+                            <div class="pausas-col">
+                                <h4><i class="fas fa-calendar-check"></i> Pausas Programadas</h4>
+                                <div class="pausas-total">
+                                    <span>Total:</span>
+                                    <strong id="total-pausas-programadas">0h</strong>
+                                </div>
+                                <ul id="lista-pausas-programadas">
+                                    <li class="empty">Nenhuma pausa programada</li>
+                                </ul>
+                            </div>
+
+                            <div class="pausas-col">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Pausas Não Programadas</h4>
+                                <div class="pausas-total">
+                                    <span>Total:</span>
+                                    <strong id="total-pausas-nao-programadas">0h</strong>
+                                </div>
+                                <ul id="lista-pausas-nao-programadas">
+                                    <li class="empty">Nenhuma pausa não programada</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="resultados-capacidade">
+                    <div class="capacidade-cards">
+                        <div class="capacidade-card">
+                            <div class="card-header">
+                                <h3>Capacidade Instalada</h3>
+                                <i class="fas fa-industry"></i>
+                            </div>
+                            <div class="card-body">
+                                <div class="capacidade-valor" id="valor-instalada">168h</div>
+                                <p class="capacidade-desc">24h/dia × 7 dias/semana</p>
+                                <div class="capacidade-detalhe">
+                                    <span>Por máquina: 168h</span>
+                                    <span>Total: 840h</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="capacidade-card">
+                            <div class="card-header">
+                                <h3>Capacidade Efetiva</h3>
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="card-body">
+                                <div class="capacidade-valor" id="valor-efetiva">240h</div>
+                                <p class="capacidade-desc" id="desc-efetiva">8h/dia × 6 dias × 5 máquinas</p>
+                                <div class="capacidade-detalhe">
+                                    <span>Por máquina: 48h</span>
+                                    <span>Total: 240h</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="capacidade-card">
+                            <div class="card-header">
+                                <h3>Capacidade Disponível</h3>
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="card-body">
+                                <div class="capacidade-valor" id="valor-disponivel">230h</div>
+                                <p class="capacidade-desc">Efetiva - Pausas Programadas</p>
+                                <div class="capacidade-detalhe">
+                                    <span>Utilização: 95.8%</span>
+                                    <span class="status-indicator status-ok"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="capacidade-card">
+                            <div class="card-header">
+                                <h3>Capacidade Realizada</h3>
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="card-body">
+                                <div class="capacidade-valor" id="valor-realizada">215h</div>
+                                <p class="capacidade-desc">Disponível - Pausas Não Programadas</p>
+                                <div class="capacidade-detalhe">
+                                    <span>Eficiência: 89.6%</span>
+                                    <span class="status-indicator status-warning"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grafico-capacidade">
+                        <h3><i class="fas fa-chart-bar"></i> Distribuição da Capacidade (horas/semana)</h3>
+                        <canvas id="grafico-capacidade"></canvas>
+                    </div>
+
+                    <div class="metricas-adicionais">
+                        <div class="metrica-card">
+                            <h4><i class="fas fa-percentage"></i> Utilização da Capacidade</h4>
+                            <div class="metrica-valor">89.6%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 89.6%"></div>
+                            </div>
+                        </div>
+                        <div class="metrica-card">
+                            <h4><i class="fas fa-tachometer-alt"></i> Eficiência Geral</h4>
+                            <div class="metrica-valor">76.8%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 76.8%"></div>
+                            </div>
+                        </div>
+                        <div class="metrica-card">
+                            <h4><i class="fas fa-calendar-times"></i> Tempo de Parada</h4>
+                            <div class="metrica-valor">25h</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 10.4%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- OEE -->
+        <section id="oee" class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-chart-line"></i> Overall Equipment Effectiveness</h2>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="btn-exportar-oee">
+                        <i class="fas fa-file-export"></i> Exportar Relatório
+                    </button>
+                </div>
+            </div>
+
+            <div class="oee-container">
+                <div class="oee-calculo">
+                    <div class="calculo-form">
+                        <h3><i class="fas fa-calculator"></i> Calcular OEE</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tempo-disponivel">
+                                    <i class="fas fa-clock"></i> Tempo Disponível (h):
+                                </label>
+                                <input type="number" id="tempo-disponivel" value="230" class="input-number" min="1">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="tempo-paradas">
+                                    <i class="fas fa-stop-circle"></i> Tempo de Paradas (h):
+                                </label>
+                                <input type="number" id="tempo-paradas" value="15" class="input-number" min="0">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tempo-ciclo-ideal">
+                                    <i class="fas fa-stopwatch"></i> Tempo Ciclo Ideal (min/peça):
+                                </label>
+                                <input type="number" id="tempo-ciclo-ideal" value="2.5" step="0.1" class="input-number" min="0.1">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="total-produzido">
+                                    <i class="fas fa-boxes"></i> Total Produzido (unidades):
+                                </label>
+                                <input type="number" id="total-produzido" value="5000" class="input-number" min="1">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="defeitos">
+                                <i class="fas fa-times-circle"></i> Unidades com Defeito:
+                            </label>
+                            <input type="number" id="defeitos" value="150" class="input-number" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maquina-oee">
+                                <i class="fas fa-industry"></i> Máquina:
+                            </label>
+                            <select id="maquina-oee" class="select-filter">
+                                <option value="todas">Todas as máquinas</option>
+                                <option value="1">Máquina 1</option>
+                                <option value="2">Máquina 2</option>
+                                <option value="3">Máquina 3</option>
+                                <option value="4">Máquina 4</option>
+                                <option value="5">Máquina 5</option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn-primary" id="btn-calcular-oee">
+                            <i class="fas fa-calculator"></i> Calcular OEE
+                        </button>
+                    </div>
+
+                    <div class="oee-resultado">
+                        <div class="oee-indicador">
+                            <div class="oee-valor-container">
+                                <div class="oee-valor" id="oee-total">0%</div>
+                                <div class="oee-label">OEE Total</div>
+                            </div>
+                            <div class="oee-classificacao" id="oee-classificacao">
+                                <span class="classificacao-badge">-</span>
+                            </div>
+                        </div>
+
+                        <div class="oee-componentes">
+                            <div class="componente">
+                                <div class="componente-header">
+                                    <h4><i class="fas fa-play-circle"></i> Disponibilidade</h4>
+                                    <span class="componente-valor" id="disponibilidade-valor">0%</span>
+                                </div>
+                                <div class="componente-bar">
+                                    <div class="bar-fill" id="disponibilidade-bar"></div>
+                                </div>
+                                <div class="componente-desc" id="disponibilidade-desc">
+                                    Tempo de produção disponível
+                                </div>
+                            </div>
+
+                            <div class="componente">
+                                <div class="componente-header">
+                                    <h4><i class="fas fa-tachometer-alt"></i> Performance</h4>
+                                    <span class="componente-valor" id="performance-valor">0%</span>
+                                </div>
+                                <div class="componente-bar">
+                                    <div class="bar-fill" id="performance-bar"></div>
+                                </div>
+                                <div class="componente-desc" id="performance-desc">
+                                    Velocidade de produção
+                                </div>
+                            </div>
+
+                            <div class="componente">
+                                <div class="componente-header">
+                                    <h4><i class="fas fa-check-circle"></i> Qualidade</h4>
+                                    <span class="componente-valor" id="qualidade-valor">0%</span>
+                                </div>
+                                <div class="componente-bar">
+                                    <div class="bar-fill" id="qualidade-bar"></div>
+                                </div>
+                                <div class="componente-desc" id="qualidade-desc">
+                                    Produtos sem defeito
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="oee-detalhes">
+                            <div class="detalhe-item">
+                                <span class="detalhe-label">Tempo Operacional:</span>
+                                <span class="detalhe-valor" id="tempo-operacional">0h</span>
+                            </div>
+                            <div class="detalhe-item">
+                                <span class="detalhe-label">Produção Ideal:</span>
+                                <span class="detalhe-valor" id="producao-ideal">0</span>
+                            </div>
+                            <div class="detalhe-item">
+                                <span class="detalhe-label">Pecas Boas:</span>
+                                <span class="detalhe-valor" id="pecas-boas">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="oee-historico">
+                    <div class="historico-header">
+                        <h3><i class="fas fa-history"></i> Histórico OEE</h3>
+                        <select id="filtro-periodo-oee" class="select-filter-sm">
+                            <option value="7">Últimos 7 dias</option>
+                            <option value="30">Últimos 30 dias</option>
+                            <option value="90">Últimos 90 dias</option>
+                            <option value="365">Último ano</option>
+                        </select>
+                    </div>
+                    <canvas id="grafico-oee"></canvas>
+                    <div class="historico-tabela">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>OEE</th>
+                                    <th>Disponibilidade</th>
+                                    <th>Performance</th>
+                                    <th>Qualidade</th>
+                                    <th>Máquina</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-historico-oee">
+                                <tr>
+                                    <td colspan="6" class="empty">Nenhum registro encontrado</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kanban -->
+        <section id="kanban" class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-columns"></i> Sistema Kanban</h2>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="btn-novo-card">
+                        <i class="fas fa-plus"></i> Nova Tarefa
+                    </button>
+                    <button class="btn btn-secondary" id="btn-limpar-concluidos">
+                        <i class="fas fa-trash"></i> Limpar Concluídos
+                    </button>
+                </div>
+            </div>
+
+            <div class="kanban-container">
+                <div class="kanban-column" id="coluna-a-fazer">
+                    <div class="column-header">
+                        <div class="column-title">
+                            <h3>A Fazer</h3>
+                            <span class="column-subtitle">Tarefas pendentes</span>
+                        </div>
+                        <span class="column-count">0</span>
+                    </div>
+                    <div class="column-body" data-status="a-fazer">
+                        <div class="empty-column">
+                            <i class="fas fa-plus-circle"></i>
+                            <p>Arraste tarefas aqui ou crie uma nova</p>
+                        </div>
+                    </div>
+                    <div class="column-footer">
+                        <button class="btn btn-sm btn-block" data-action="add-card" data-column="a-fazer">
+                            <i class="fas fa-plus"></i> Adicionar Tarefa
+                        </button>
+                    </div>
+                </div>
+
+                <div class="kanban-column" id="coluna-fazendo">
+                    <div class="column-header">
+                        <div class="column-title">
+                            <h3>Fazendo</h3>
+                            <span class="column-subtitle">Em andamento</span>
+                        </div>
+                        <span class="column-count">0</span>
+                    </div>
+                    <div class="column-body" data-status="fazendo">
+                        <div class="empty-column">
+                            <i class="fas fa-spinner"></i>
+                            <p>Arraste tarefas em andamento aqui</p>
+                        </div>
+                    </div>
+                    <div class="column-footer">
+                        <div class="column-stats">
+                            <span>Tempo médio: 2h</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kanban-column" id="coluna-testando">
+                    <div class="column-header">
+                        <div class="column-title">
+                            <h3>Testando</h3>
+                            <span class="column-subtitle">Em teste/controle qualidade</span>
+                        </div>
+                        <span class="column-count">0</span>
+                    </div>
+                    <div class="column-body" data-status="testando">
+                        <div class="empty-column">
+                            <i class="fas fa-vial"></i>
+                            <p>Tarefas em fase de testes</p>
+                        </div>
+                    </div>
+                    <div class="column-footer">
+                        <div class="column-stats">
+                            <span>Taxa de aprovação: 95%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kanban-column" id="coluna-concluido">
+                    <div class="column-header">
+                        <div class="column-title">
+                            <h3>Concluído</h3>
+                            <span class="column-subtitle">Tarefas finalizadas</span>
+                        </div>
+                        <span class="column-count">0</span>
+                    </div>
+                    <div class="column-body" data-status="concluido">
+                        <div class="empty-column">
+                            <i class="fas fa-check-circle"></i>
+                            <p>Tarefas concluídas com sucesso</p>
+                        </div>
+                    </div>
+                    <div class="column-footer">
+                        <button class="btn btn-sm btn-block" data-action="clear-column" data-column="concluido">
+                            <i class="fas fa-trash"></i> Limpar Concluídos
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kanban-metrics">
+                <div class="metric-card">
+                    <h4><i class="fas fa-tasks"></i> Total de Tarefas</h4>
+                    <div class="metric-value" id="total-tarefas">0</div>
+                </div>
+                <div class="metric-card">
+                    <h4><i class="fas fa-clock"></i> Tempo Médio</h4>
+                    <div class="metric-value" id="tempo-medio">0h</div>
+                </div>
+                <div class="metric-card">
+                    <h4><i class="fas fa-check-circle"></i> Taxa de Conclusão</h4>
+                    <div class="metric-value" id="taxa-conclusao">0%</div>
+                </div>
+                <div class="metric-card">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Tarefas Atrasadas</h4>
+                    <div class="metric-value" id="tarefas-atrasadas">0</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fluxo de Produção -->
+        <section id="fluxo" class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-project-diagram"></i> Fluxo de Produção</h2>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="btn-atualizar-fluxo">
+                        <i class="fas fa-sync"></i> Atualizar
+                    </button>
+                    <button class="btn btn-secondary" id="btn-exportar-fluxo">
+                        <i class="fas fa-file-export"></i> Exportar Fluxograma
+                    </button>
+                </div>
+            </div>
+
+            <div class="fluxo-container">
+                <div class="fluxo-etapas">
+                    <div class="etapa" data-etapa="1">
+                        <div class="etapa-icon">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <div class="etapa-content">
+                            <h3>Recebimento de Matéria-Prima</h3>
+                            <p>Controle de qualidade e armazenamento</p>
+                            <div class="etapa-info">
+                                <span class="info-item">
+                                    <i class="fas fa-clock"></i>
+                                    2.5h
+                                </span>
+                                <span class="info-item">
+                                    <i class="fas fa-box"></i>
+                                    95%
+                                </span>
+                            </div>
+                        </div>
+                        <div class="etapa-status status-ok">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="etapa-conector"></div>
+
+                    <div class="etapa" data-etapa="2">
+                        <div class="etapa-icon">
+                            <i class="fas fa-blender"></i>
+                        </div>
+                        <div class="etapa-content">
+                            <h3>Preparação</h3>
+                            <p>Mistura e preparo dos ingredientes</p>
+                            <div class="etapa-info">
+                                <span class="info-item">
+                                    <i class="fas fa-clock"></i>
+                                    3.0h
+                                </span>
+                                <span class="info-item">
+                                    <i class="fas fa-box"></i>
+                                    92%
+                                </span>
+                            </div>
+                        </div>
+                        <div class="etapa-status status-warning">
+                            <i class="fas fa-exclamation"></i>
+                        </div>
+                    </div>
+
+                    <div class="etapa-conector"></div>
+
+                    <div class="etapa" data-etapa="3">
+                        <div class="etapa-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <div class="etapa-content">
+                            <h3>Produção</h3>
+                            <p>Processamento nas máquinas</p>
+                            <div class="etapa-info">
+                                <span class="info-item">
+                                    <i class="fas fa-clock"></i>
+                                    4.5h
+                                </span>
+                                <span class="info-item">
+                                    <i class="fas fa-box"></i>
+                                    88%
+                                </span>
+                            </div>
+                        </div>
+                        <div class="etapa-status status-ok">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="etapa-conector"></div>
+
+                    <div class="etapa" data-etapa="4">
+                        <div class="etapa-icon">
+                            <i class="fas fa-temperature-low"></i>
+                        </div>
+                        <div class="etapa-content">
+                            <h3>Resfriamento</h3>
+                            <p>Temperatura controlada</p>
+                            <div class="etapa-info">
+                                <span class="info-item">
+                                    <i class="fas fa-clock"></i>
+                                    2.0h
+                                </span>
+                                <span class="info-item">
+                                    <i class="fas fa-box"></i>
+                                    96%
+                                </span>
+                            </div>
+                        </div>
+                        <div class="etapa-status status-ok">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="etapa-conector"></div>
+
+                    <div class="etapa" data-etapa="5">
+                        <div class="etapa-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="etapa-content">
+                            <h3>Embalagem</h3>
+                            <p>Envasamento e selagem</p>
+                            <div class="etapa-info">
+                                <span class="info-item">
+                                    <i class="fas fa-clock"></i>
+                                    3.5h
+                                </span>
+                                <span class="info-item">
+                                    <i class="fas fa-box"></i>
+                                    85%
+                                </span>
+                            </div>
+                        </div>
+                        <div class="etapa-status status-critical">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+
+                    <div class="etapa-conector"></div>
+
+                    <div class="etapa" data-etapa="6">
+                        <div class="etapa-icon">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <div class="etapa-content">
+                            <h3>Controle de Qualidade</h3>
+                            <p>Inspeção final</p>
+                            <div class="etapa-info">
+                                <span class="info-item">
+                                    <i class="fas fa-clock"></i>
+                                    1.5h
+                                </span>
+                                <span class="info-item">
+                                    <i class="fas fa-box"></i>
+                                    98%
+                                </span>
+                            </div>
+                        </div>
+                        <div class="etapa-status status-ok">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="etapa-conector"></div>
+
+                    <div class="etapa" data-etapa="7">
+                        <div class="etapa-icon">
+                            <i class="fas fa-pallet"></i>
+                        </div>
+                        <div class="etapa-content">
+                            <h3>Expedição</h3>
+                            <p>Armazenamento e distribuição</p>
+                            <div class="etapa-info">
+                                <span class="info-item">
+                                    <i class="fas fa-clock"></i>
+                                    2.0h
+                                </span>
+                                <span class="info-item">
+                                    <i class="fas fa-box"></i>
+                                    94%
+                                </span>
+                            </div>
+                        </div>
+                        <div class="etapa-status status-ok">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fluxo-metricas">
+                    <div class="metrica-card">
+                        <div class="metrica-header">
+                            <h4><i class="fas fa-clock"></i> Tempo Total do Ciclo</h4>
+                            <span class="metrica-trend up">+5%</span>
+                        </div>
+                        <div class="metrica-valor">19.0h</div>
+                        <div class="metrica-desc">
+                            <span>Meta: 18.0h</span>
+                            <span>Diferença: +1.0h</span>
+                        </div>
+                    </div>
+                    
+                    <div class="metrica-card">
+                        <div class="metrica-header">
+                            <h4><i class="fas fa-percentage"></i> Eficiência do Processo</h4>
+                            <span class="metrica-trend down">-2%</span>
+                        </div>
+                        <div class="metrica-valor">85%</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metrica-card">
+                        <div class="metrica-header">
+                            <h4><i class="fas fa-boxes"></i> Produtividade</h4>
+                            <span class="metrica-trend up">+3%</span>
+                        </div>
+                        <div class="metrica-valor">92%</div>
+                        <div class="metrica-desc">
+                            <span>Meta: 90%</span>
+                            <span>Superando meta</span>
+                        </div>
+                    </div>
+                    
+                    <div class="metrica-card">
+                        <div class="metrica-header">
+                            <h4><i class="fas fa-times-circle"></i> Taxa de Rejeição</h4>
+                            <span class="metrica-trend down">-1%</span>
+                        </div>
+                        <div class="metrica-valor">2.5%</div>
+                        <div class="metrica-desc">
+                            <span>Meta: ≤3%</span>
+                            <span>Dentro da meta</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fluxo-bottlenecks">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Pontos de Gargalo</h3>
+                    <div class="bottlenecks-list">
+                        <div class="bottleneck-item">
+                            <div class="bottleneck-info">
+                                <h4>Etapa 5 - Embalagem</h4>
+                                <p>Alto tempo de processamento e baixa eficiência</p>
+                            </div>
+                            <div class="bottleneck-metrics">
+                                <span class="metric-badge critical">85%</span>
+                                <span class="metric-badge warning">+15% tempo</span>
+                            </div>
+                        </div>
+                        <div class="bottleneck-item">
+                            <div class="bottleneck-info">
+                                <h4>Etapa 2 - Preparação</h4>
+                                <p>Falta de sincronização com a produção</p>
+                            </div>
+                            <div class="bottleneck-metrics">
+                                <span class="metric-badge warning">92%</span>
+                                <span class="metric-badge warning">+10% tempo</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal para Novo Produto -->
+    <div id="modal-produto" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-box"></i> Novo Produto</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="form-produto">
+                    <div class="form-group">
+                        <label for="produto-nome">
+                            <i class="fas fa-tag"></i> Nome do Produto:
+                        </label>
+                        <input type="text" id="produto-nome" class="input-text" placeholder="Ex: Cobertura Chocolate 190g" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="produto-categoria">
+                            <i class="fas fa-layer-group"></i> Categoria:
+                        </label>
+                        <select id="produto-categoria" class="select-filter" required>
+                            <option value="">Selecione a categoria...</option>
+                            <option value="cobertura">Cobertura</option>
+                            <option value="biju">Biju</option>
+                            <option value="granulado">Granulado</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="sabor-field">
+                        <label for="produto-sabor">
+                            <i class="fas fa-ice-cream"></i> Sabor:
+                        </label>
+                        <select id="produto-sabor" class="select-filter">
+                            <option value="">Selecione o sabor...</option>
+                            <option value="chocolate">Chocolate</option>
+                            <option value="chocolate-meio-amargo">Chocolate Meio Amargo</option>
+                            <option value="morango">Morango</option>
+                            <option value="coco">Coco</option>
+                            <option value="doce-de-leite">Doce de Leite</option>
+                            <option value="caramelo">Caramelo</option>
+                            <option value="colorido">Colorido</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="produto-tamanho">
+                            <i class="fas fa-weight"></i> Tamanho/Embalagem:
+                        </label>
+                        <select id="produto-tamanho" class="select-filter" required>
+                            <option value="">Selecione a categoria primeiro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="produto-tempo-producao">
+                                <i class="fas fa-clock"></i> Tempo de Produção (min):
+                            </label>
+                            <input type="number" id="produto-tempo-producao" class="input-number" min="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="produto-producao-hora">
+                                <i class="fas fa-industry"></i> Produção/Hora:
+                            </label>
+                            <input type="number" id="produto-producao-hora" class="input-number" min="1" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="produto-estoque">
+                                <i class="fas fa-boxes"></i> Estoque Atual:
+                            </label>
+                            <input type="number" id="produto-estoque" class="input-number" min="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="produto-estoque-min">
+                                <i class="fas fa-exclamation-triangle"></i> Estoque Mínimo:
+                            </label>
+                            <input type="number" id="produto-estoque-min" class="input-number" min="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="produto-estoque-max">
+                                <i class="fas fa-warehouse"></i> Estoque Máximo:
+                            </label>
+                            <input type="number" id="produto-estoque-max" class="input-number" min="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="produto-ponto-reposicao">
+                                <i class="fas fa-sync"></i> Ponto de Reposição:
+                            </label>
+                            <input type="number" id="produto-ponto-reposicao" class="input-number" min="1" required>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary close-modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Salvar Produto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Nova Tarefa Kanban -->
+    <div id="modal-kanban" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-tasks"></i> Nova Tarefa</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="form-kanban">
+                    <div class="form-group">
+                        <label for="kanban-titulo">
+                            <i class="fas fa-heading"></i> Título:
+                        </label>
+                        <input type="text" id="kanban-titulo" class="input-text" placeholder="Ex: Produzir Cobertura Chocolate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kanban-descricao">
+                            <i class="fas fa-align-left"></i> Descrição:
+                        </label>
+                        <textarea id="kanban-descricao" class="input-text" rows="3" placeholder="Detalhes da tarefa..."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="kanban-prioridade">
+                                <i class="fas fa-flag"></i> Prioridade:
+                            </label>
+                            <select id="kanban-prioridade" class="select-filter" required>
+                                <option value="baixa">Baixa</option>
+                                <option value="media" selected>Média</option>
+                                <option value="alta">Alta</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="kanban-responsavel">
+                                <i class="fas fa-user"></i> Responsável:
+                            </label>
+                            <input type="text" id="kanban-responsavel" class="input-text" placeholder="Nome do responsável" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="kanban-duracao">
+                                <i class="fas fa-clock"></i> Duração Estimada (h):
+                            </label>
+                            <input type="number" id="kanban-duracao" class="input-number" min="1" value="4" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="kanban-categoria">
+                                <i class="fas fa-tag"></i> Categoria:
+                            </label>
+                            <select id="kanban-categoria" class="select-filter" required>
+                                <option value="producao">Produção</option>
+                                <option value="manutencao">Manutenção</option>
+                                <option value="qualidade">Qualidade</option>
+                                <option value="outros">Outros</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kanban-status">
+                            <i class="fas fa-columns"></i> Status Inicial:
+                        </label>
+                        <select id="kanban-status" class="select-filter" required>
+                            <option value="a-fazer">A Fazer</option>
+                            <option value="fazendo">Fazendo</option>
+                            <option value="testando">Testando</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary close-modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Criar Tarefa
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/produtos.js"></script>
+    <script src="js/capacidade.js"></script>
+    <script src="js/oee.js"></script>
+    <script src="js/kanban.js"></script>
+</body>
+</html>
