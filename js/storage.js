@@ -49,11 +49,11 @@ class StorageSystem {
         // Sabores de cobertura
         const saboresCobertura = [
             { nome: "Chocolate", codigo: "CHOC" },
-            { nome: "Chocolate Meio Amargo", codigo: "MA" },
             { nome: "Morango", codigo: "MOR" },
-            { nome: "Coco", codigo: "COC" },
-            { nome: "Doce de Leite", codigo: "DL" },
-            { nome: "Caramelo", codigo: "CAR" }
+            { nome: "Caramelo", codigo: "CAR" },
+            { nome: "Limao", codigo: "LIM" },
+            { nome: "Maracuja", codigo: "MAR" },
+            { nome: "Algodao", codigo: "ALG" }
         ];
 
         // Tamanhos de cobertura
@@ -216,12 +216,12 @@ class StorageSystem {
         
         const saborMap = {
             'chocolate': 'CHOC',
-            'chocolate-meio-amargo': 'MA',
             'morango': 'MOR',
-            'coco': 'COC',
-            'doce-de-leite': 'DL',
             'caramelo': 'CAR',
-            'colorido': 'COL'
+            'limao': 'LIM',
+            'maracuja': 'MAR',
+            'algodao': 'ALGO',
+            'outros': 'OUT'
         };
         
         const prefixo = prefixos[produto.categoria] || 'PROD';
