@@ -235,12 +235,12 @@ class ProdutosSystem {
     getSaborNome(sabor) {
         const sabores = {
             'chocolate': 'Chocolate',
-            'chocolate-meio-amargo': 'Chocolate Meio Amargo',
             'morango': 'Morango',
-            'coco': 'Coco',
-            'doce-de-leite': 'Doce de Leite',
             'caramelo': 'Caramelo',
-            'colorido': 'Colorido'
+            'limao': 'Limão',
+            'maracuja': 'Maracujá',
+            'algodao': 'Algodão Doce',
+            'outros': 'Outros'
         };
         return sabores[sabor] || sabor;
     }
